@@ -6,10 +6,13 @@ import dayjs from "dayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+import { useLocation } from "react-router-dom";
 
 function RentCar() {
   const [details, setDetails] = useState({});
   const { id } = useParams();
+  const location = useLocation();
+  const isAdmin = location.state?.isAdmin || false;
 
   useEffect(() => {
     axios.get(`http://localhost:8080/api/car/${id}`).then((res) => {
@@ -41,8 +44,10 @@ function RentCar() {
   };
 
   const handleRentDetails = (id) => {
-    navigate("/cars/"+id+"/details");
+    navigate("/cars/" + id + "/details");
   };
+
+  const handleUpdateCarDetails = () => {};
 
   // return (
   //   <div className="container border border-black mt-5 gap-3">
@@ -143,9 +148,13 @@ function RentCar() {
             </div>
             <div>
               {details.available ? (
-                <h6 className="p-1 bg-success text-white rounded" disabled>Available</h6>
+                <h6 className="p-1 bg-success text-white rounded" disabled>
+                  Available
+                </h6>
               ) : (
-                <h6 className="p-1 bg-secondary text-white rounded " disabled>Not Available</h6>
+                <h6 className="p-1 bg-secondary text-white rounded " disabled>
+                  Not Available
+                </h6>
               )}
             </div>
           </div>
@@ -200,12 +209,23 @@ function RentCar() {
           </div>
         </div>
         <div className="mt-2 mb-2">
-          {/* <Button className="w-100">Book now</Button> */}
-          {details.available ? <Button variant="primary" className="w-100" onClick={() => handleRentDetails(details.id)}>
+          {isAdmin ? (
+            <Button variant="danger" className="w-100" onClick={handleUpdateCarDetails}>
+              Update Details
+            </Button>
+          ) : details.available ? (
+            <Button
+              variant="primary" 
+              className="w-100"
+              onClick={() => handleRentDetails(details.id)}
+            >
               Rent now
-            </Button> : <Button variant="secondary" className="w-100" disabled>
+            </Button>
+          ) : (
+            <Button variant="secondary" className="w-100" disabled>
               Rent now
-            </Button>}
+            </Button>
+          )}
         </div>
       </div>
     </div>

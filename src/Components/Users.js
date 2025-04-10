@@ -3,7 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import Basic from "./Basic";
 
-function Admin() {
+function Users() {
   // const [data, setData] = useState([]);
   // const [loading, setLoading] = useState(true);
   // const [error, setError] = useState(null);
@@ -12,6 +12,7 @@ function Admin() {
   //   axios
   //     .get("http://localhost:8080/api/car")
   //     .then((res) => {
+  //       // console.log(res.data.available);
   //       setData(res.data);
   //       setLoading(false);
   //     })
@@ -24,15 +25,20 @@ function Admin() {
   // if (loading)
   //   return (
   //     <div className="loading-container d-flex justify-content-center align-items-center vh-100">
-  //       <img src={loading_gif} alt="Loading . . ." style={{ width: '75px', height: 'auto' }}/>
+  //       <img
+  //         src={loading_gif}
+  //         alt="Loading . . ."
+  //         style={{ width: "75px", height: "auto" }}
+  //       />
   //     </div>
   //   );
 
-  // if (error) return (
-  //   <div className="loading-container d-flex justify-content-center align-items-center vh-100">
-  //     <h3>Error: {error.message} {" "} 😓</h3>
-  //   </div>
-  // );
+  // if (error)
+  //   return (
+  //     <div className="loading-container d-flex justify-content-center align-items-center vh-100">
+  //       <h3>Error: {error.message} 😓</h3>
+  //     </div>
+  //   );
 
   // return (
   //   <div>
@@ -46,6 +52,7 @@ function Admin() {
   //       <div className="d-flex flex-wrap gap-2 justify-content-center">
   //         {data.map((car) => (
   //           <CarCard
+  //             key={car.id}
   //             car_id={car.id}
   //             car_brand_image={`data:${car.brand_imageType};base64,${car.brand_imageData}`}
   //             car_brand_name={car.brand_name}
@@ -54,16 +61,17 @@ function Admin() {
   //             car_fuel={car.fuel_type}
   //             car_gear={car.gear_shift}
   //             car_seat={car.seat}
-  //             isAdmin={true}
+  //             isAdmin={false}
+  //             available={car.available}
   //           />
   //         ))}
   //       </div>
   //     </div>
   //   </div>
   // );
-  return (
-    <Basic Admin={true}/>
+  return(
+    <Basic Admin={false} />
   )
 }
 
-export default Admin;
+export default Users;

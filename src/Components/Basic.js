@@ -5,7 +5,7 @@ import CarCard from "./CarCard";
 import axios from "axios";
 import loading_gif from "../Images/loading.gif";
 
-function Cars() {
+function Basic({Admin}) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -14,7 +14,6 @@ function Cars() {
     axios
       .get("http://localhost:8080/api/car")
       .then((res) => {
-        // console.log(res.data.available);
         setData(res.data);
         setLoading(false);
       })
@@ -24,6 +23,7 @@ function Cars() {
       });
   }, []);
 
+  console.log(Admin);
   if (loading)
     return (
       <div className="loading-container d-flex justify-content-center align-items-center vh-100">
@@ -54,7 +54,6 @@ function Cars() {
         <div className="d-flex flex-wrap gap-2 justify-content-center">
           {data.map((car) => (
             <CarCard
-              key={car.id}
               car_id={car.id}
               car_brand_image={`data:${car.brand_imageType};base64,${car.brand_imageData}`}
               car_brand_name={car.brand_name}
@@ -63,8 +62,7 @@ function Cars() {
               car_fuel={car.fuel_type}
               car_gear={car.gear_shift}
               car_seat={car.seat}
-              isAdmin={false}
-              available={car.available}
+              isAdmin={Admin}
             />
           ))}
         </div>
@@ -73,4 +71,4 @@ function Cars() {
   );
 }
 
-export default Cars;
+export default Basic;

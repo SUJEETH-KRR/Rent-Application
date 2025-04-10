@@ -8,19 +8,24 @@ function CarCard({
   car_brand_image,
   car_brand_name,
   car_image,
-  car_model,
-  car_fuel,
-  car_gear,
-  car_seat,
+  // car_model,
+  // car_fuel,
+  // car_gear,
+  // car_seat,
   isAdmin,
-  available
+  // available,
 }) {
-
   const navigate = useNavigate();
 
   const handleRent = (car_id) => {
-    navigate("/cars/"+car_id);
-  }
+    if (isAdmin) {
+      navigate("/admin/cars/" + car_id + "/update", {
+        state: { isAdmin: true },
+      });
+    } else {
+      navigate("/cars/" + car_id, { state: { isAdmin: false } });
+    }
+  };
 
   // console.log(available);
   return (
@@ -40,7 +45,7 @@ function CarCard({
               <Card.Title>{car_brand_name}</Card.Title>
             </div>
           </div>
-          {isAdmin && (
+          {/* {isAdmin && (
             <div className="me-3 mt-2">
               {" "}
               <Button
@@ -51,7 +56,7 @@ function CarCard({
                 <i className="bi bi-pencil-fill"></i> Edit
               </Button>
             </div>
-          )}
+          )} */}
         </div>
         <Card.Body>
           <Card.Img
@@ -77,9 +82,15 @@ function CarCard({
             {/* {available ? <Button variant="primary" className="w-100" onClick={() => handleRent(car_id)}>
               Rent now
             </Button> : <Button variant="secondary" className="w-100" disabled>
-              Rent now
+              Rent now]
             </Button>} */}
-            <Button variant="primary" className="w-100" onClick={() => handleRent(car_id)}>View Details</Button>
+            <Button
+              variant="primary"
+              className="w-100"
+              onClick={() => handleRent(car_id)}
+            >
+              View Details
+            </Button>
           </div>
         </Card.Body>
       </Card>
