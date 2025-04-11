@@ -1,146 +1,329 @@
-import React from "react";
+import axios from "axios";
+import React, { useState } from "react";
+import { Button } from "react-bootstrap";
 
-function UpdateCarForm() {
+function UpdateCarForm({
+  brand,
+  model,
+  fuel_type,
+  gear_shift,
+  seats,
+  isavailable,
+  rent_price,
+  car_id,
+}) {
+  const [formData, setFormData] = useState({
+    brand_name: brand,
+    brandImage: null,
+    model_name: model,
+    carImage: null,
+    fuelType: fuel_type,
+    gearType: gear_shift,
+    seat: seats,
+    available: isavailable,
+    price: rent_price,
+  });
+
+  const [formErrors, setFormErrors] = useState({
+    brandImage: false,
+    carImage: false,
+    fuelType: false,
+    gearType: false,
+    available: false,
+  });
+
+  const handleChange = (e) => {
+    const { name, value, type, files } = e.target;
+
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: type === "file" ? files[0] : value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Validation for required fields
+    let errors = {};
+
+    if (!formData.brand_name) errors.brand_name = true;
+    if (!formData.model_name) errors.model_name = true;
+    if (!formData.seat) errors.seat = true;
+    if (!formData.price) errors.price = true;
+
+    if (!formData.brandImage) errors.brandImage = true;
+    if (!formData.carImage) errors.carImage = true;
+
+    if (!formData.fuelType) errors.fuelType = true;
+    if (!formData.gearType) errors.gearType = true;
+    if (!formData.available) errors.available = true;
+
+    setFormErrors(errors);
+
+    // If there are errors, do not submit the form
+    // if (Object.keys(errors).length === 0) {
+    //   // Submit form data
+    //   console.log("Form submitted:", formData);
+    //   // axios.put("http://localhost:8080/api/car"+id)
+    //   // .then()
+    // } else {
+    //   console.log("Form validation failed:", errors);
+    // }
+
+    const formDataToSend = new FormData();
+
+    const carDetails = {
+      brand_name: formData.brand_name,
+      model: formData.model_name,
+      fuel_type: formData.fuelType,
+      gear_shift: formData.gearType,
+      seat: formData.seat,
+      available: formData.available,
+      rent_price: formData.price,
+    };
+
+    formDataToSend.append(
+      "car",
+      new Blob([JSON.stringify(carDetails)], { type: "application/json" })
+    );
+
+    // Append files
+    if (formData.carImage) {
+      formDataToSend.append("imageFile", formData.carImage);
+    }
+    if (formData.brandImage) {
+      formDataToSend.append("brandFile", formData.brandImage);
+    }
+
+    try {
+      const response = await axios.put(
+        `http://localhost:8080/api/car/${car_id}`, // pass `carId` as prop
+        formDataToSend,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+  
+      console.log("Update successful:", response.data);
+      // Optionally: close form or refresh data
+    } catch (error) {
+      console.error("Update failed:", error);
+    }
+  };
+
   return (
     <div className="container-fluid vh-100 d-flex justify-content-center align-items-center">
-      {/* Full height container and flexbox for centering */}
-      <form className="p-4 border shadow rounded">
+      <form
+        className="p-4 border shadow rounded bg-white"
+        onSubmit={handleSubmit}
+        encType="multipart/form-data"
+      >
         <div className="d-flex gap-5">
           <div className="mb-3">
-            <label htmlFor="brand" className="form-label">
-              <strong>Brand</strong>
+            <label htmlFor="brand_name" className="form-label">
+              <strong>brand_name</strong>
             </label>
             <input
               type="text"
-              id="brand"
-              name="brand"
+              id="brand_name"
+              name="brand_name"
               className="form-control"
-              placeholder="Enter brand name"
+              placeholder="Enter brand_name name"
+              value={formData.brand_name}
+              onChange={handleChange}
+              required
             />
+            {formErrors.brand_name && (
+              <div className="text-danger">brand_name is required</div>
+            )}
           </div>
           <div className="mb-3">
-            <label htmlFor="carName" className="form-label">
-              <strong>Brand Image</strong>
+            <label htmlFor="brandImage" className="form-label">
+              <strong>brand_name Image</strong>
             </label>
             <input
               type="file"
-              id="carName"
-              name="carName"
+              id="brandImage"
+              name="brandImage"
               className="form-control"
-              placeholder="Enter car name"
+              onChange={handleChange}
+              accept="image/*"
+              required
             />
+            {formErrors.brandImage && (
+              <div className="text-danger">brand_name image is required</div>
+            )}
           </div>
         </div>
 
         <div className="d-flex gap-5">
           <div className="mb-3">
-            <label htmlFor="brand" className="form-label">
-              <strong>Model</strong>
+            <label htmlFor="model_name" className="form-label">
+              <strong>model_name</strong>
             </label>
             <input
               type="text"
-              id="brand"
-              name="brand"
+              id="model_name"
+              name="model_name"
               className="form-control"
-              placeholder="Enter Model name"
+              placeholder="Enter model_name name"
+              value={formData.model_name}
+              onChange={handleChange}
+              required
             />
+            {formErrors.model_name && (
+              <div className="text-danger">model_name is required</div>
+            )}
           </div>
           <div className="mb-3">
-            <label htmlFor="carimage" className="form-label">
+            <label htmlFor="carImage" className="form-label">
               <strong>Car Image</strong>
             </label>
             <input
               type="file"
-              id="carimage"
-              name="carimage"
+              id="carImage"
+              name="carImage"
               className="form-control"
-              placeholder="Enter car name"
+              onChange={handleChange}
+              accept="image/*"
+              required
             />
+            {formErrors.carImage && (
+              <div className="text-danger">Car image is required</div>
+            )}
           </div>
         </div>
 
-        {/* Add some margin between Fuel and Gear section */}
-        <div className="mb-4"></div> {/* Adding some spacing between the sections */}
+        <div className="mb-4"></div>
 
         <div className="d-flex gap-5">
           <div className="d-flex flex-column mb-3">
-            <label htmlFor="fuelType" className="form-label">
+            <label className="form-label">
               <strong>Fuel Type</strong>
             </label>
-            <div className="form-check">
-              <input
-                className="form-check-input"
-                type="radio"
-                name="fuelType"
-                id="petrol"
-                value="petrol"
-                defaultChecked
-              />
-              <label className="form-check-label" htmlFor="petrol">
-                Petrol
-              </label>
-            </div>
-            <div className="form-check">
-              <input
-                className="form-check-input"
-                type="radio"
-                name="fuelType"
-                id="diesel"
-                value="diesel"
-              />
-              <label className="form-check-label" htmlFor="diesel">
-                Diesel
-              </label>
-            </div>
-            <div className="form-check">
-              <input
-                className="form-check-input"
-                type="radio"
-                name="fuelType"
-                id="ev"
-                value="ev"
-              />
-              <label className="form-check-label" htmlFor="ev">
-                EV
-              </label>
-            </div>
+            {["petrol", "diesel", "ev"].map((type) => (
+              <div className="form-check" key={type}>
+                <input
+                  className="form-check-input"
+                  type="radio"
+                  name="fuelType"
+                  id={type}
+                  value={type}
+                  checked={formData.fuelType === type}
+                  onChange={handleChange}
+                  required
+                />
+                <label className="form-check-label" htmlFor={type}>
+                  {type.charAt(0).toUpperCase() + type.slice(1)}
+                </label>
+              </div>
+            ))}
+            {formErrors.fuelType && (
+              <div className="text-danger">Fuel type is required</div>
+            )}
           </div>
 
           <div className="d-flex flex-column mb-3">
-            <label htmlFor="gearType" className="form-label">
+            <label className="form-label">
               <strong>Gear Type</strong>
             </label>
-            <div className="form-check">
-              <input
-                className="form-check-input"
-                type="radio"
-                name="gearType"
-                id="manual"
-                value="manual"
-                defaultChecked
-              />
-              <label className="form-check-label" htmlFor="manual">
-                Manual
-              </label>
-            </div>
-            <div className="form-check">
-              <input
-                className="form-check-input"
-                type="radio"
-                name="gearType"
-                id="automatic"
-                value="automatic"
-              />
-              <label className="form-check-label" htmlFor="automatic">
-                Automatic
-              </label>
-            </div>
+            {["manual", "automatic"].map((type) => (
+              <div className="form-check" key={type}>
+                <input
+                  className="form-check-input"
+                  type="radio"
+                  name="gearType"
+                  id={type}
+                  value={type}
+                  checked={formData.gearType === type}
+                  onChange={handleChange}
+                  required
+                />
+                <label className="form-check-label" htmlFor={type}>
+                  {type.charAt(0).toUpperCase() + type.slice(1)}
+                </label>
+              </div>
+            ))}
+            {formErrors.gearType && (
+              <div className="text-danger">Gear type is required</div>
+            )}
+          </div>
+
+          <div className="mb-3">
+            <label htmlFor="seat" className="form-label">
+              <strong>Seat</strong>
+            </label>
+            <input
+              type="number"
+              id="seat"
+              name="seat"
+              className="form-control"
+              placeholder="Enter number of seats"
+              value={formData.seat}
+              onChange={handleChange}
+              required
+            />
+            {formErrors.seat && (
+              <div className="text-danger">Seat is required</div>
+            )}
           </div>
         </div>
 
-        <button type="submit" className="btn btn-primary">
-          Update Car
-        </button>
+        <div className="d-flex gap-5">
+          <div className="d-flex flex-column mb-3">
+            <label className="form-label">
+              <strong>Available</strong>
+            </label>
+            {["true", "false"].map((val) => (
+              <div className="form-check" key={val}>
+                <input
+                  className="form-check-input"
+                  type="radio"
+                  name="available"
+                  id={val}
+                  value={val}
+                  checked={formData.available === val}
+                  onChange={handleChange}
+                  required
+                />
+                <label className="form-check-label" htmlFor={val}>
+                  {val === "true" ? "Yes" : "No"}
+                </label>
+              </div>
+            ))}
+            {formErrors.available && (
+              <div className="text-danger">Availability is required</div>
+            )}
+          </div>
+
+          <div className="mb-3">
+            <label htmlFor="price" className="form-label">
+              <strong>Rent Price</strong>
+            </label>
+            <input
+              type="number"
+              id="price"
+              name="price"
+              className="form-control"
+              placeholder="Enter price"
+              value={formData.price}
+              onChange={handleChange}
+              required
+            />
+            {formErrors.price && (
+              <div className="text-danger">Price is required</div>
+            )}
+          </div>
+        </div>
+
+        <div>
+          <Button className="w-100" variant="danger" type="submit">
+            Update Details
+          </Button>
+        </div>
       </form>
     </div>
   );

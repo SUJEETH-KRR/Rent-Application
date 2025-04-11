@@ -62,7 +62,7 @@ function CarCard({
           <Card.Img
             variant="top"
             src={car_image}
-            style={{ width: "100%", height: "200px", objectFit: "cover" }}
+            style={{ width: "350px", height: "200px", objectFit: "cover" }}
           ></Card.Img>
           {/* <div className="d-flex gap-4 mt-3">
             <div>
