@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { Button } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 
 function UpdateCarForm({
   brand,
@@ -11,18 +12,34 @@ function UpdateCarForm({
   isavailable,
   rent_price,
   car_id,
+  isEdit,
+  onSuccess,
 }) {
+  // const [formData, setFormData] = useState({
+  //   brand_name: brand,
+  //   brandImage: null,
+  //   model_name: model,
+  //   carImage: null,
+  //   fuelType: fuel_type,
+  //   gearType: gear_shift,
+  //   seat: seats,
+  //   available: isavailable,
+  //   price: rent_price,
+  // });
+
   const [formData, setFormData] = useState({
-    brand_name: brand,
+    brand_name: brand || "",
     brandImage: null,
-    model_name: model,
+    model_name: model || "",
     carImage: null,
-    fuelType: fuel_type,
-    gearType: gear_shift,
-    seat: seats,
-    available: isavailable,
-    price: rent_price,
+    fuelType: fuel_type || "",
+    gearType: gear_shift || "",
+    seat: seats || "",
+    available: isavailable || false,
+    price: rent_price || "",
   });
+
+  const navigate = useNavigate();
 
   const [formErrors, setFormErrors] = useState({
     brandImage: false,
@@ -61,16 +78,6 @@ function UpdateCarForm({
 
     setFormErrors(errors);
 
-    // If there are errors, do not submit the form
-    // if (Object.keys(errors).length === 0) {
-    //   // Submit form data
-    //   console.log("Form submitted:", formData);
-    //   // axios.put("http://localhost:8080/api/car"+id)
-    //   // .then()
-    // } else {
-    //   console.log("Form validation failed:", errors);
-    // }
-
     const formDataToSend = new FormData();
 
     const carDetails = {
@@ -97,16 +104,25 @@ function UpdateCarForm({
     }
 
     try {
-      const response = await axios.put(
-        `http://localhost:8080/api/car/${car_id}`, // pass `carId` as prop
-        formDataToSend,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-  
+      const response = isEdit
+        ? await axios.put(
+            `http://localhost:8080/api/car/${car_id}`,
+            formDataToSend,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          )
+        : await axios.post(`http://localhost:8080/api/car`, formDataToSend, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          });
+
+      if (onSuccess) onSuccess();
+      navigate("/admin", { replace: true });
+
       console.log("Update successful:", response.data);
       // Optionally: close form or refresh data
     } catch (error) {
@@ -124,7 +140,7 @@ function UpdateCarForm({
         <div className="d-flex gap-5">
           <div className="mb-3">
             <label htmlFor="brand_name" className="form-label">
-              <strong>brand_name</strong>
+              <strong>Brand</strong>
             </label>
             <input
               type="text"
@@ -142,7 +158,7 @@ function UpdateCarForm({
           </div>
           <div className="mb-3">
             <label htmlFor="brandImage" className="form-label">
-              <strong>brand_name Image</strong>
+              <strong>Brand Image</strong>
             </label>
             <input
               type="file"
@@ -162,7 +178,7 @@ function UpdateCarForm({
         <div className="d-flex gap-5">
           <div className="mb-3">
             <label htmlFor="model_name" className="form-label">
-              <strong>model_name</strong>
+              <strong>Model</strong>
             </label>
             <input
               type="text"
@@ -204,7 +220,7 @@ function UpdateCarForm({
             <label className="form-label">
               <strong>Fuel Type</strong>
             </label>
-            {["petrol", "diesel", "ev"].map((type) => (
+            {["Petrol", "Diesel", "EV"].map((type) => (
               <div className="form-check" key={type}>
                 <input
                   className="form-check-input"
@@ -230,7 +246,7 @@ function UpdateCarForm({
             <label className="form-label">
               <strong>Gear Type</strong>
             </label>
-            {["manual", "automatic"].map((type) => (
+            {["Manual", "Automatic"].map((type) => (
               <div className="form-check" key={type}>
                 <input
                   className="form-check-input"
@@ -321,7 +337,7 @@ function UpdateCarForm({
 
         <div>
           <Button className="w-100" variant="danger" type="submit">
-            Update Details
+            {isEdit ? "Update Car" : "Add Car"}
           </Button>
         </div>
       </form>

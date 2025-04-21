@@ -4,11 +4,15 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import CarCard from "./CarCard";
 import axios from "axios";
 import loading_gif from "../Images/loading.gif";
+import { Button } from "react-bootstrap";
+import UpdateCarForm from "./UpdateCarForm";
 
-function Basic({Admin}) {
+function Basic({ Admin }) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const [addMode, setAddMode] = useState(false);
 
   useEffect(() => {
     axios
@@ -23,7 +27,7 @@ function Basic({Admin}) {
       });
   }, []);
 
-  console.log(Admin);
+  // console.log(Admin);
   if (loading)
     return (
       <div className="loading-container d-flex justify-content-center align-items-center vh-100">
@@ -44,10 +48,19 @@ function Basic({Admin}) {
 
   return (
     <div>
-      <div className="d-flex border border-black p-3 justify-content-end">
-        <div>User name</div>
-        <div className="ms-3">
-          <i className="bi bi-person"></i>
+      <div className="d-flex border border-black p-3 justify-content-end align-items-center gap-5">
+        {Admin && (
+          <div>
+            <Button variant="secondary" onClick={() => setAddMode(!addMode)}>
+              Add +
+            </Button>
+          </div>
+        )}
+        <div className="d-flex">
+          <div>User name</div>
+          <div className="ms-3">
+            <i className="bi bi-person"></i>
+          </div>
         </div>
       </div>
       <div className="border border-black mt-4">
@@ -67,6 +80,30 @@ function Basic({Admin}) {
           ))}
         </div>
       </div>
+      {addMode && (
+        <div className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center bg-dark bg-opacity-50">
+          <div
+            className="p-4 rounded shadow bg-opacity-100"
+            style={{ maxWidth: "800px", width: "90%" }}
+          >
+            <div className="d-flex align-items-end justify-content-end mt-5">
+              <Button variant="danger" className="p-2">
+                <i
+                  className="bi bi-x-circle-fill"
+                  onClick={() => setAddMode(!addMode)}
+                ></i>
+              </Button>
+            </div>
+            <UpdateCarForm
+              isEdit={false}
+              onSuccess={() => {
+                setAddMode(false);
+                window.location.reload();
+              }}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

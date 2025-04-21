@@ -5,7 +5,6 @@ import Users from "./Components/Users";
 import Home from "./Components/Home";
 import RentCar from "./Components/RentCar";
 import RentDetails from "./Components/RentDetails";
-import UpdateCarForm from "./Components/UpdateCarForm";
 
 function App() {
   return (
@@ -16,7 +15,6 @@ function App() {
       <Route path="/cars/:id" element={<RentCar />} />
       <Route path="/admin/cars/:id/update" element={<RentCar />} />
       <Route path="/cars/:id/details" element={<RentDetails />}/>
-      <Route path="/form" element={<UpdateCarForm />} />
     </Routes>
   );
 }

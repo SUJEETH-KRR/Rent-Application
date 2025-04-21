@@ -12,6 +12,7 @@ import UpdateCarForm from "./UpdateCarForm";
 function RentCar() {
   const [details, setDetails] = useState({});
   const [editMode, setEditMode] = useState(false);
+  const [deleteMode, setDeleteMode] = useState(false);
   const { id } = useParams();
   const location = useLocation();
   const isAdmin = location.state?.isAdmin || false;
@@ -50,11 +51,21 @@ function RentCar() {
     setEditMode(!editMode);
   };
 
+  const displayDelete = () => {
+    setDeleteMode(!deleteMode);
+  };
+
+  const handleDelete = (id) => {
+    axios.delete(`http://localhost:8080/api/car/${id}`)
+    console.log("Deleted Successfully");
+    navigate("/admin", {replace:true});
+  }
+
   return (
-    <div className="d-flex mt-3 justify-content-center align-items-center">
+    <div className="d-flex mt-3 justify-content-center align-items-center vh-100">
       <div className="d-flex flex-column position-relative">
         {/* Background Content with Blur Effect */}
-        <div className={`d-flex flex-column ${editMode ? 'opacity-50' : ''}`}>
+        <div className={`d-flex flex-column ${editMode ? "opacity-50" : ""}`}>
           {/* Top section with Brand Image, Model, Brand Name, and Price */}
           <div className="d-flex justify-content-between align-items-start">
             {/* Left side (Brand Image, Brand Name, Model) */}
@@ -142,9 +153,22 @@ function RentCar() {
           </div>
           <div className="mt-2 mb-2">
             {isAdmin ? (
-              <Button variant="danger" className="w-100" onClick={() => displayForm()}>
-                Update Details
-              </Button>
+              <div className="d-flex justify-content-center align-items-center gap-3">
+                <Button
+                  variant="warning"
+                  className="w-100"
+                  onClick={() => displayForm()}
+                >
+                  Update Details
+                </Button>
+                <Button
+                  variant="danger"
+                  className="w-100"
+                  onClick={() => displayDelete()}
+                >
+                  Delete
+                </Button>
+              </div>
             ) : details.available ? (
               <Button
                 variant="primary"
@@ -173,17 +197,40 @@ function RentCar() {
               className="p-4 rounded shadow"
               style={{ maxWidth: "800px", width: "90%" }}
             >
-              <UpdateCarForm 
-                brand= {details.brand_name}
-                model= {details.model}
-                fuel_type= {details.fuel_type}
-                gear_shift= {details.gear_shift}
-                seats= {details.seat}
-                isavailable= {details.available}
-                rent_price= {details.rent_price}
-                car_id= {id}
+              <div className="d-flex align-items-end justify-content-end mt-5">
+                <Button variant="danger" className="p-2">
+                  <i
+                    className="bi bi-x-circle-fill"
+                    onClick={() => setEditMode(!editMode)}
+                  ></i>
+                </Button>
+              </div>
+              <UpdateCarForm
+                brand={details.brand_name}
+                model={details.model}
+                fuel_type={details.fuel_type}
+                gear_shift={details.gear_shift}
+                seats={details.seat}
+                isavailable={details.available}
+                rent_price={details.rent_price}
+                car_id={id}
+                isEdit={true}
               />
               {/* {setEditMode(!editMode)} */}
+            </div>
+          </div>
+        )}
+        {deleteMode && (
+          <div className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center bg-dark bg-opacity-50">
+            <div
+              className="p-4 rounded shadow bg-white"
+              style={{ maxWidth: "400px", width: "90%" }}
+            >
+              <strong className="d-flex justify-content-center align-items-center">Do you need to delete the car record ?</strong>
+              <div className="d-flex justify-content-center align-items-center gap-3 p-2">
+                <Button variant="secondary" className="w-100" onClick={() => setDeleteMode(false)}>Cancel</Button>
+                <Button variant="danger" className="w-100" onClick={() => handleDelete(id)}>Delete</Button>
+              </div>
             </div>
           </div>
         )}
