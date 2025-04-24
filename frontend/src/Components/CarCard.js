@@ -8,7 +8,7 @@ function CarCard({
   car_brand_image,
   car_brand_name,
   car_image,
-  // car_model,
+  car_model,
   // car_fuel,
   // car_gear,
   // car_seat,

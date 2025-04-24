@@ -13,6 +13,7 @@ function Basic({ Admin }) {
   const [error, setError] = useState(null);
 
   const [addMode, setAddMode] = useState(false);
+  const [book, setBook] = useState(false);
 
   useEffect(() => {
     axios
@@ -27,7 +28,6 @@ function Basic({ Admin }) {
       });
   }, []);
 
-  // console.log(Admin);
   if (loading)
     return (
       <div className="loading-container d-flex justify-content-center align-items-center vh-100">
@@ -56,6 +56,11 @@ function Basic({ Admin }) {
             </Button>
           </div>
         )}
+        <div>
+          <Button variant="secondary" onClick={() => setBook(!book)}>
+            Booking
+          </Button>
+        </div>
         <div className="d-flex">
           <div>User name</div>
           <div className="ms-3">
@@ -87,11 +92,12 @@ function Basic({ Admin }) {
             style={{ maxWidth: "800px", width: "90%" }}
           >
             <div className="d-flex align-items-end justify-content-end mt-5">
-              <Button variant="danger" className="p-2">
-                <i
-                  className="bi bi-x-circle-fill"
-                  onClick={() => setAddMode(!addMode)}
-                ></i>
+              <Button
+                variant="danger"
+                className="p-2"
+                onClick={() => setAddMode(!addMode)}
+              >
+                <i className="bi bi-x-circle-fill"></i>
               </Button>
             </div>
             <UpdateCarForm
@@ -101,6 +107,47 @@ function Basic({ Admin }) {
                 window.location.reload();
               }}
             />
+          </div>
+        </div>
+      )}
+
+      {book && (
+        <div className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-end align-items-start bg-dark bg-opacity-75">
+          <div
+            className="p-4 bg-opacity-100 bg-white"
+            style={{ maxWidth: "500px", width: "90%" }}
+          >
+            <div className="d-flex align-items-end justify-content-end">
+              <Button
+                variant="secondary"
+                className="p-2"
+                onClick={() => setBook(!book)}
+              >
+                <i className="bi bi-x-circle-fill"></i>
+              </Button>
+            </div>
+            <div className="justify-content-center align-items-center mt-2">
+              <div className="d-flex justify-content-between">
+                <div className="d-flex flex-column">
+                  <h4 className="text-danger">Brand name</h4>
+                  <h6>Car Name</h6>
+                </div>
+                <div className="d-flex align-items-center justify-content-center">
+                  <Button variant="danger">Cancel</Button>
+                </div>
+              </div>
+            </div>
+            <div className="justify-content-center align-items-center">
+              Car Image
+            </div>
+            <div className="d-flex justify-content-between">
+              <div>Start</div>
+              <div>End</div>
+            </div>
+            <div className="d-flex justify-content-between">
+              <div>Price</div>
+              <div>Transaction</div>
+            </div>
           </div>
         </div>
       )}

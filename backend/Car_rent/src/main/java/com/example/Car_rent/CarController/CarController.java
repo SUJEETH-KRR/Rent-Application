@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.Car_rent.CarService.CarService;
+import com.example.Car_rent.Modal.CarBook_Details;
 import com.example.Car_rent.Modal.Car_Details;
 import com.example.Car_rent.Modal.Modal;
 import com.razorpay.RazorpayException;
@@ -104,17 +105,17 @@ public class CarController {
 		}
 	}
 	
-//	@PostMapping("/create-order")
-//	public String createRentOrder(@RequestBody int amount, @RequestBody String currency) throws RazorpayException {
-//		return service.createRentOrder(amount, currency, "Rent-101");
-//	}
-	
 	@PostMapping("/create-order")
 	public String createRentOrder(@RequestBody Map<String, Object> payload) throws RazorpayException {
 	    int amount = ((Number) payload.get("amount")).intValue(); // safe cast
 	    String currency = (String) payload.get("currency");
 
 	    return service.createRentOrder(amount, currency, "Rent-101");
+	} // Razorpay order creation Controller
+	
+	@PostMapping("/bookings")
+	public CarBook_Details carBooking(@RequestPart CarBook_Details bookingDetails, @RequestPart String imageType, @RequestPart String imageData) throws IOException {
+		return service.carBooking(bookingDetails, imageType, imageData);
 	}
 
 }

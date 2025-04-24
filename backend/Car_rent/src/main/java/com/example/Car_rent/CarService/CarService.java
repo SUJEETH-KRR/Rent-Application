@@ -1,6 +1,7 @@
 package com.example.Car_rent.CarService;
 
 import java.io.IOException;
+import java.util.Base64;
 import java.util.List;
 
 import org.json.JSONObject;
@@ -10,9 +11,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.example.Car_rent.CarRepo.CarBookingRepo;
 import com.example.Car_rent.CarRepo.CarRepo;
+import com.example.Car_rent.Modal.CarBook_Details;
 import com.example.Car_rent.Modal.Car_Details;
 import com.example.Car_rent.Modal.Modal;
+import com.fasterxml.jackson.databind.deser.Deserializers.Base;
 import com.razorpay.Order;
 import com.razorpay.RazorpayClient;
 import com.razorpay.RazorpayException;
@@ -23,6 +27,9 @@ public class CarService {
 	
 	@Autowired
 	private CarRepo repo;
+	
+	@Autowired
+	private CarBookingRepo carBookingRepo;
 	
 	public List<Car_Details> getCarDetails() {
 		return repo.findAll();
@@ -77,4 +84,13 @@ public class CarService {
 		
 		return order.toString();
 	}
+	
+	public CarBook_Details carBooking(CarBook_Details carBooking, String imageType, String imageData) throws IOException {
+		carBooking.setImageType(imageType);
+		byte[] imageBase64 = Base64.getDecoder().decode(imageData);
+		carBooking.setImageData(imageBase64);
+		return carBookingRepo.save(carBooking);
+	}
+	
+	
 }

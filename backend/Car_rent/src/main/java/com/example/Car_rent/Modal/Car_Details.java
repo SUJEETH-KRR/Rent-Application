@@ -13,7 +13,7 @@ import jakarta.persistence.Table;
 public class Car_Details {
 
 	@Id
-//	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id; //identity
 	private String brand_name; //Car brand name
 	private String model; //Car model

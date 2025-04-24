@@ -23,6 +23,7 @@ function RentCar() {
     });
   }, [id]);
 
+  // console.log(details.imageData);
   const [startDate, setStartDate] = useState(dayjs());
   const [endDate, setEndDate] = useState(dayjs());
 
@@ -44,14 +45,14 @@ function RentCar() {
   };
 
   const handleRentDetails = async () => {
-    // navigate("/cars/" + id + "/details");
     const rent_amount = handlePrice();
-    const response = await axios.post(`http://localhost:8080/api/create-order`, 
+    const response = await axios.post(
+      `http://localhost:8080/api/create-order`,
       {
         amount: rent_amount,
-        currency: "INR"
+        currency: "INR",
       }
-    )
+    );
     const order = response.data;
     const options = {
       key: "rzp_test_RW34o51yxs90m2",
@@ -60,12 +61,44 @@ function RentCar() {
       name: "Car Rent",
       description: "Amount to be paid",
       order_id: order.id,
-      handler: function(response) {
-        alert(response.razorpay_payment_id);
+      handler: async function (response) {
+        const booking = {
+          brandName: details.brand_name,
+          model: details.model,
+          startDate: startDate.toISOString(),
+          endDate: endDate.toISOString(),
+          rentPrice: handlePrice(),
+          paymentId: response.razorpay_payment_id,
+        };
+
+        const formDataToSend = new FormData();
+
+        formDataToSend.append(
+          "bookingDetails",
+          new Blob([JSON.stringify(booking)], { type: "application/json" })
+        );
+        formDataToSend.append("imageType", details.imageType);
+        formDataToSend.append("imageData", details.imageData);
+        try {
+          await axios.post(
+            `http://localhost:8080/api/bookings`,
+            formDataToSend,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          );
+          formDataToSend.forEach((value, key) => {
+            console.log(`${key}: ${value}`);
+          });
+        } catch (error) {
+          console.log(error);
+        }
       },
       theme: {
-        color: "#3399cc"
-      }
+        color: "#3399cc",
+      },
     };
     const rzp = new window.Razorpay(options);
     rzp.open();
@@ -80,19 +113,16 @@ function RentCar() {
   };
 
   const handleDelete = (id) => {
-    axios.delete(`http://localhost:8080/api/car/${id}`)
+    axios.delete(`http://localhost:8080/api/car/${id}`);
     console.log("Deleted Successfully");
-    navigate("/admin", {replace:true});
-  }
+    navigate("/admin", { replace: true });
+  };
 
   return (
     <div className="d-flex mt-3 justify-content-center align-items-center vh-100">
       <div className="d-flex flex-column position-relative">
-        {/* Background Content with Blur Effect */}
         <div className={`d-flex flex-column ${editMode ? "opacity-50" : ""}`}>
-          {/* Top section with Brand Image, Model, Brand Name, and Price */}
           <div className="d-flex justify-content-between align-items-start">
-            {/* Left side (Brand Image, Brand Name, Model) */}
             <div className="d-flex gap-2">
               <div>
                 <img
@@ -250,10 +280,24 @@ function RentCar() {
               className="p-4 rounded shadow bg-white"
               style={{ maxWidth: "400px", width: "90%" }}
             >
-              <strong className="d-flex justify-content-center align-items-center">Do you need to delete the car record ?</strong>
+              <strong className="d-flex justify-content-center align-items-center">
+                Do you need to delete the car record ?
+              </strong>
               <div className="d-flex justify-content-center align-items-center gap-3 p-2">
-                <Button variant="secondary" className="w-100" onClick={() => setDeleteMode(false)}>Cancel</Button>
-                <Button variant="danger" className="w-100" onClick={() => handleDelete(id)}>Delete</Button>
+                <Button
+                  variant="secondary"
+                  className="w-100"
+                  onClick={() => setDeleteMode(false)}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  variant="danger"
+                  className="w-100"
+                  onClick={() => handleDelete(id)}
+                >
+                  Delete
+                </Button>
               </div>
             </div>
           </div>

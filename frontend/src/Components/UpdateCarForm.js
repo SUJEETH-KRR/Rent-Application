@@ -15,18 +15,6 @@ function UpdateCarForm({
   isEdit,
   onSuccess,
 }) {
-  // const [formData, setFormData] = useState({
-  //   brand_name: brand,
-  //   brandImage: null,
-  //   model_name: model,
-  //   carImage: null,
-  //   fuelType: fuel_type,
-  //   gearType: gear_shift,
-  //   seat: seats,
-  //   available: isavailable,
-  //   price: rent_price,
-  // });
-
   const [formData, setFormData] = useState({
     brand_name: brand || "",
     brandImage: null,
