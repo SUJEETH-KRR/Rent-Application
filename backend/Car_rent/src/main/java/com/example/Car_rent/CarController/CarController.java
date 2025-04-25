@@ -35,10 +35,20 @@ public class CarController {
 	@Autowired
 	private CarService service;
 	
-	@RequestMapping("/")
+	@RequestMapping("/sujeeth")
 	public String greet() {
 		return "Sujeeth";
 	}
+	
+//	@GetMapping("/login")
+//	public String login() {
+//		return "login";
+//	}
+//	
+//	@GetMapping("/home")
+//    public String homePage() {
+//        return "home"; // This would be the page after successful login
+//    }
 	
 	@GetMapping("/car")
 	public ResponseEntity<List<Car_Details>> getCarDetails() {
