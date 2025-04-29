@@ -21,23 +21,36 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.Car_rent.CarService.CarService;
+import com.example.Car_rent.DTO.UserLogin;
 import com.example.Car_rent.Modal.CarBook_Details;
 import com.example.Car_rent.Modal.Car_Details;
+import com.example.Car_rent.Modal.User;
 import com.razorpay.RazorpayException;
 
 @RestController
 //@Controller
 @CrossOrigin
-//@RequestMapping("/api/")
+@RequestMapping("/api/")
 public class CarController {
 	
 	@Autowired
 	private CarService service;
 	
-	@GetMapping("/login")
-    public String loginPage() {
-        return "login"; // This would be the page after successful login
-    }
+//	@GetMapping("/login")
+//    public String loginPage() {
+//        return "login"; // This would be the page after successful login
+//    }
+	
+	@PostMapping("/login") 
+	public ResponseEntity<String> getUserDetails(@RequestBody UserLogin user) {
+		System.out.println("Login endpoint hit with username: " + user.getUsername());
+		boolean isValid = service.validateUserDetails(user.getUsername(), user.getPassword());
+		if(isValid) {
+			return ResponseEntity.ok("Login Successful");
+		} else {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Credentails");
+		}
+	}
 	
 	@GetMapping("/home")
 	public String home() {

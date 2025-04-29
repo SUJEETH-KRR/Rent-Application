@@ -1,7 +1,25 @@
-import React from "react";
+import React, { useState } from "react";
 import Car from "../Images/login.jpg";
 
 function AdminLogin() {
+  const [creds, setCreds] = useState({
+    username: "",
+    password: "",
+  });
+
+  const handleChange = (e) => {
+    const {name, value} = e.target;
+    setCreds((prevData) => ({
+      ...prevData,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log(creds);
+  };
+
   return (
     <div style={{ position: "relative", height: "100vh", overflow: "hidden" }}>
       {/* Background */}
@@ -33,19 +51,23 @@ function AdminLogin() {
           }}
         >
           <h3 className="text-center mb-4">Admin Login</h3>
-          <form>
+          <form onSubmit={handleSubmit}>
             <div className="form-group mb-3">
               <input
                 type="text"
+                name="username"
                 placeholder="Username"
                 className="form-control"
+                onChange={handleChange}
               />
             </div>
             <div className="form-group mb-3">
               <input
+                name="password"
                 type="password"
                 placeholder="Password"
                 className="form-control"
+                onChange={handleChange}
               />
             </div>
             <button type="submit" className="btn btn-primary w-100">
