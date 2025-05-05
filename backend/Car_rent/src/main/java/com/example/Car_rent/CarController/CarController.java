@@ -43,7 +43,7 @@ public class CarController {
 	
 	@PostMapping("/login") 
 	public ResponseEntity<String> getUserDetails(@RequestBody UserLogin user) {
-		System.out.println("Login endpoint hit with username: " + user.getUsername());
+//		System.out.println("Login endpoint hit with username: " + user.getUsername());
 		boolean isValid = service.validateUserDetails(user.getUsername(), user.getPassword());
 		if(isValid) {
 			return ResponseEntity.ok("Login Successful");

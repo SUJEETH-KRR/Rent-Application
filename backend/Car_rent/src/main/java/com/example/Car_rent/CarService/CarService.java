@@ -102,7 +102,7 @@ public class CarService {
 		
 		if(user.isPresent()) {
 			boolean isValid = user.get().getPassword().equals(password);
-	        System.out.println("Password match: " + isValid);  // Log the result
+//	        System.out.println("Password match: " + isValid);  // Log the result
 	        return isValid;
 		} else {
 	        System.out.println("User not found");

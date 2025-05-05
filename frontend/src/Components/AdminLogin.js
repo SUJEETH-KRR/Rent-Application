@@ -1,23 +1,43 @@
 import React, { useState } from "react";
 import Car from "../Images/login.jpg";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function AdminLogin() {
+  const navigate = useNavigate();
+
   const [creds, setCreds] = useState({
     username: "",
     password: "",
   });
 
+  const [validCreds, setValidCreds] = useState(false);
+
   const handleChange = (e) => {
-    const {name, value} = e.target;
+    const { name, value } = e.target;
     setCreds((prevData) => ({
       ...prevData,
-      [name]: value
+      [name]: value,
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(creds);
+    // console.log(creds);
+    try {
+      const response = await axios.post(
+        `http://localhost:8080/api/login`,
+        creds
+      );
+      if (response.status === 200) {
+        navigate("/admin");
+      }
+    } catch (error) {
+      if(error.response && error.response.status === 401)
+        setValidCreds(true);
+      else 
+        console.log(error);
+    }
   };
 
   return (
@@ -51,6 +71,11 @@ function AdminLogin() {
           }}
         >
           <h3 className="text-center mb-4">Admin Login</h3>
+          {validCreds && (
+            <div className="alert alert-danger" role="alert">
+              Invalid Credentails
+            </div>
+          )}
           <form onSubmit={handleSubmit}>
             <div className="form-group mb-3">
               <input
