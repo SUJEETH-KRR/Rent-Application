@@ -6,14 +6,20 @@ import axios from "axios";
 import loading_gif from "../Images/loading.gif";
 import { Button } from "react-bootstrap";
 import UpdateCarForm from "./UpdateCarForm";
+import { useNavigate } from "react-router-dom";
 
 function Basic({ Admin }) {
+
+  const username = localStorage.getItem("adminUsername");
+
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   const [addMode, setAddMode] = useState(false);
   const [book, setBook] = useState(false);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios
@@ -27,6 +33,12 @@ function Basic({ Admin }) {
         setLoading(false);
       });
   }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("isAdminLoggedIn");
+    localStorage.removeItem("adminUserName");
+    navigate('/admin/login');
+  }
 
   if (loading)
     return (
@@ -48,26 +60,27 @@ function Basic({ Admin }) {
 
   return (
     <div>
-      <div className="d-flex border border-black p-3 justify-content-end align-items-center gap-5">
-        {Admin && (
-          <div>
+      <div className="d-flex justify-content-between align-items-center border border-black p-3">
+        <div className="d-flex gap-3">
+          {Admin && (
             <Button variant="secondary" onClick={() => setAddMode(!addMode)}>
               Add +
             </Button>
-          </div>
-        )}
-        <div>
+          )}
           <Button variant="secondary" onClick={() => setBook(!book)}>
             Booking
           </Button>
         </div>
-        <div className="d-flex">
-          <div>User name</div>
-          <div className="ms-3">
+
+        <div className="d-flex align-items-center gap-3">
+          <Button variant="danger" onClick={handleLogout}>Logout</Button> 
+          <div>{username}</div>
+          <div className="ms-2">
             <i className="bi bi-person"></i>
           </div>
         </div>
       </div>
+
       <div className="border border-black mt-4">
         <div className="d-flex flex-wrap gap-2 justify-content-center">
           {data.map((car) => (

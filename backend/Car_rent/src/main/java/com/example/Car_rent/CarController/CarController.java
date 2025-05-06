@@ -1,6 +1,7 @@
 package com.example.Car_rent.CarController;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,6 +28,8 @@ import com.example.Car_rent.Modal.Car_Details;
 import com.example.Car_rent.Modal.User;
 import com.razorpay.RazorpayException;
 
+import okhttp3.Response;
+
 @RestController
 //@Controller
 @CrossOrigin
@@ -36,19 +39,19 @@ public class CarController {
 	@Autowired
 	private CarService service;
 	
-//	@GetMapping("/login")
-//    public String loginPage() {
-//        return "login"; // This would be the page after successful login
-//    }
-	
 	@PostMapping("/login") 
-	public ResponseEntity<String> getUserDetails(@RequestBody UserLogin user) {
+	public ResponseEntity<Map<String, String>> getUserDetails(@RequestBody UserLogin user) {
 //		System.out.println("Login endpoint hit with username: " + user.getUsername());
 		boolean isValid = service.validateUserDetails(user.getUsername(), user.getPassword());
 		if(isValid) {
-			return ResponseEntity.ok("Login Successful");
+			Map<String, String> response = new HashMap<>();
+			response.put("message", "Login Successful");
+			response.put("username", user.getUsername());
+			return ResponseEntity.ok(response);
 		} else {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Credentails");
+			Map<String, String> errorMessage = new HashMap<>();
+			errorMessage.put("message", "Invalid Credentials");
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorMessage);
 		}
 	}
 	

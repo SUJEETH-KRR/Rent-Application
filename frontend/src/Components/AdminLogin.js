@@ -1,10 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Car from "../Images/login.jpg";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 function AdminLogin() {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const isLoggedIn = localStorage.getItem("isAdminLoggedIn") === "true";
+    if (isLoggedIn) 
+      navigate("/admin"); // 👈 Redirect to admin dashboard
+    
+  }, [navigate]);
 
   const [creds, setCreds] = useState({
     username: "",
@@ -30,13 +37,14 @@ function AdminLogin() {
         creds
       );
       if (response.status === 200) {
+        const { username } = response.data;
+        localStorage.setItem("isAdminLoggedIn", "true");
+        localStorage.setItem("adminUsername", username);
         navigate("/admin");
       }
     } catch (error) {
-      if(error.response && error.response.status === 401)
-        setValidCreds(true);
-      else 
-        console.log(error);
+      if (error.response && error.response.status === 401) setValidCreds(true);
+      else console.log(error);
     }
   };
 
